@@ -1,0 +1,15 @@
+<classpath>
+  <classpathentry kind="src" path="src/main/scala" output="target/scala-2.10/classes"/>
+  <classpathentry kind="src" path="src/main/java" output="target/scala-2.10/classes"/>
+  <classpathentry kind="src" path="src/test/scala" output="target/scala-2.10/test-classes"/>
+  <classpathentry kind="src" path="src/test/java" output="target/scala-2.10/test-classes"/>
+  <classpathentry kind="lib" path="/home/nick/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.10.3.jar"/>
+  <classpathentry kind="lib" path="/home/nick/.ivy2/cache/org.scala-lang/scala-swing/jars/scala-swing-2.10.3.jar"/>
+  <classpathentry kind="lib" path="/home/nick/.ivy2/cache/net.databinder.dispatch/dispatch-core_2.10/jars/dispatch-core_2.10-0.11.0.jar"/>
+  <classpathentry kind="lib" path="/home/nick/.ivy2/cache/com.ning/async-http-client/jars/async-http-client-1.7.16.jar"/>
+  <classpathentry kind="lib" path="/home/nick/.ivy2/cache/io.netty/netty/bundles/netty-3.6.3.Final.jar"/>
+  <classpathentry kind="lib" path="/home/nick/.ivy2/cache/org.slf4j/slf4j-api/jars/slf4j-api-1.6.2.jar"/>
+  <classpathentry kind="lib" path="/home/nick/.ivy2/cache/org.scalatest/scalatest_2.10/jars/scalatest_2.10-1.9.2.jar"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="output" path="bin"/>
+</classpath>
