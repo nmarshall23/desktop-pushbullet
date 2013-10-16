@@ -1,7 +1,6 @@
 package desktoppushbullet
 
 import java.awt.SystemTray
-
 import java.awt.Toolkit
 import java.awt.TrayIcon
 import java.awt.PopupMenu
@@ -10,30 +9,68 @@ import java.awt.event.ActionListener
 import java.awt.event.ActionEvent
 import javax.imageio.ImageIO
 import java.awt.Image
-import scala.swing.MainFrame
+import scala.swing.Frame
+import scala.collection.immutable.Set
 
-class BulletSystemTray(window:MainFrame) {
-	val tray = SystemTray.getSystemTray()
+class BulletSystemTray(windows: Set[Frame], preferencesDialog:Frame) {
 
-	val iconFile = this.getClass.getResource("/icons/PushBullet-Icon32.png")
-	//val iconImage = Toolkit.getDefaultToolkit().getImage(iconFile.filename)
-	val trayIcon = new TrayIcon(ImageIO.read( iconFile))
-	    
-	trayIcon.addActionListener(new ActionListener() {
-
-            def actionPerformed(e:ActionEvent) {
-            	println("Hi!")
-            	window.visible match {
-            	  case true  => window.visible = false
-            	  case false => window.visible = true
-            	}
-            	
-            }
-        });
-	trayIcon.setImageAutoSize(true)
-	
-	tray.add(trayIcon)
-	
-
+  setupTray
   
+  def setupTray {
+
+    val tray = SystemTray.getSystemTray()
+
+    val iconFile = this.getClass.getResource("/icons/PushBullet-Icon32.png")
+    val trayIcon = new TrayIcon(ImageIO.read(iconFile))
+
+    val PopupMenu = setupPopupMenu()
+    trayIcon.setPopupMenu(PopupMenu)
+    trayIcon.setImageAutoSize(true)
+    tray.add(trayIcon)
+  }
+  
+  def setupPopupMenu():PopupMenu = {
+    val popupMenu = new PopupMenu()
+
+    val defaultDeviceLabel = Preferences.DefaultDeviceName
+
+    popupMenu.add(defaultDeviceLabel)
+    popupMenu.addSeparator()
+    windows.foreach(setupDialogMenus(popupMenu)_ )
+    popupMenu.addSeparator()
+    setupDialogMenus(popupMenu)(preferencesDialog)
+    popupMenu.addSeparator()
+    setupQuitAction(popupMenu)
+    
+    popupMenu
+  }
+
+  def setupDialogMenus(popupMenu:PopupMenu)(frame:Frame) {
+      val menuItem = new MenuItem(frame.title)
+      menuItem.addActionListener(new ActionListener() {
+
+        def actionPerformed(e: ActionEvent) {
+          frame.visible match {
+            case true => frame.visible = false
+            case false => frame.visible = true
+          }
+
+        }
+      });
+
+      popupMenu.add(menuItem)
+  }
+  
+  def setupQuitAction(popupMenu:PopupMenu) {
+    val menuItem = new MenuItem("Quit")
+      menuItem.addActionListener(new ActionListener() {
+
+        def actionPerformed(e: ActionEvent) {
+          PushBulletApp.mainloop ! Quit
+        }
+      });
+
+      popupMenu.add(menuItem)
+  }
+
 }
