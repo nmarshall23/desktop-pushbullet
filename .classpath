@@ -9,6 +9,14 @@
   <classpathentry kind="lib" path="/home/nick/.ivy2/cache/com.ning/async-http-client/jars/async-http-client-1.7.16.jar"/>
   <classpathentry kind="lib" path="/home/nick/.ivy2/cache/io.netty/netty/bundles/netty-3.6.3.Final.jar"/>
   <classpathentry kind="lib" path="/home/nick/.ivy2/cache/org.slf4j/slf4j-api/jars/slf4j-api-1.6.2.jar"/>
+  <classpathentry kind="lib" path="/home/nick/.ivy2/cache/org.streum/configrity-core_2.10/jars/configrity-core_2.10-1.0.0.jar"/>
+  <classpathentry kind="lib" path="/home/nick/.ivy2/cache/org.scalatest/scalatest_2.10/jars/scalatest_2.10-1.9.1.jar"/>
+  <classpathentry kind="lib" path="/home/nick/.ivy2/cache/org.scala-lang/scala-actors/jars/scala-actors-2.10.0.jar"/>
+  <classpathentry kind="lib" path="/home/nick/.ivy2/cache/org.scala-lang/scala-reflect/jars/scala-reflect-2.10.0.jar"/>
+  <classpathentry kind="lib" path="/home/nick/.ivy2/cache/com.typesafe.akka/akka-actor_2.10/jars/akka-actor_2.10-2.2.1.jar"/>
+  <classpathentry kind="lib" path="/home/nick/.ivy2/cache/com.typesafe/config/bundles/config-1.0.2.jar"/>
+  <classpathentry kind="lib" path="/home/nick/.ivy2/cache/io.argonaut/argonaut_2.10/jars/argonaut_2.10-6.0.1.jar"/>
+  <classpathentry kind="lib" path="/home/nick/.ivy2/cache/org.scalaz/scalaz-core_2.10/bundles/scalaz-core_2.10-7.0.3.jar"/>
   <classpathentry kind="lib" path="/home/nick/.ivy2/cache/org.scalatest/scalatest_2.10/jars/scalatest_2.10-1.9.2.jar"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
   <classpathentry kind="output" path="bin"/>

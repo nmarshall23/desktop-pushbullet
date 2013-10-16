@@ -1,0 +1,5 @@
+package desktoppushbullet
+
+class PushAddressDialog {
+
+}
