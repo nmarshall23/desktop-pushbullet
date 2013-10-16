@@ -4,6 +4,8 @@ import scala.swing.Frame
 import akka.actor.Actor
 import akka.actor.ActorSystem
 import akka.actor.Props
+import desktoppushbullet.dialogs.PushLinkDialog
+import desktoppushbullet.dialogs.NoteDialog
 
 object PushBulletApp {
 
@@ -34,7 +36,7 @@ class appLoop extends Actor {
 
   def doSetup {
     val pref = new PreferencesDialog(false)
-    val dialogs = Set[Frame](new PushLinkDialog)
+    val dialogs = Set[Frame](new PushLinkDialog, new NoteDialog)
 
     val tray = new BulletSystemTray(dialogs, pref)
   }

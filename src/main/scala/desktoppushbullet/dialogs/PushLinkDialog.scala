@@ -1,15 +1,17 @@
-package desktoppushbullet
+package desktoppushbullet.dialogs
 
-
+import desktoppushbullet.PushBulletApp
+import desktoppushbullet.Link
 import scala.swing._
 import scala.swing.event.ButtonClicked
+import akka.actor.actorRef2Scala
 
 
 class PushLinkDialog extends Frame {
   
-  title = "Push Bullet"
-      object linktitle extends TextField { columns = 5 }
-      object linkurl extends TextField { columns = 5 }
+  title = "Push Link"
+      object linktitle extends TextField { columns = 8 }
+      object linkurl extends TextField { columns = 8 }
       object pushButton extends Button { text = "Push!" }
 
       contents = new BoxPanel(Orientation.Vertical) {
