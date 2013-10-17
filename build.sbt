@@ -16,5 +16,5 @@ libraryDependencies ++= Seq(
 //  "com.propensive" % "rapture-io" % "0.7.2"
 )
 
-initialCommands := "import com.gmail.nmarshall23.desktoppushbullet._"
+initialCommands := "import desktoppushbullet._"
 
