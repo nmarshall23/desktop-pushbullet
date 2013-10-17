@@ -2,22 +2,27 @@ package desktoppushbullet
 
 
 import org.streum.configrity._
+import org.streum.configrity.io.StandardFormat.ParserException
 
 object Preferences {
-  private val configFileName = "app.conf"
+  private val configFileName = "pushbullet_desktop.conf"
 
   private val config = try {
     Configuration.load(configFileName, org.streum.configrity.io.BlockFormat)
   } catch {
     case e:java.io.FileNotFoundException => Configuration()
+    case e:ParserException => Configuration() //Hmm Guess it's better to overwrite the configuration. 
   }
 
 
   
   def setAPI_KEY(key:String) = config.set[String]("users_api_key",key).save(configFileName)
   def setDevice(device:Devices) {
+    val manufacturer = device.extra.manufacturer
+    val model = device.extra.model
+    val name = s""""$manufacturer $model"""" 
     config.set[Int]("device.id"  , device.id)
-       .set[String]("device.name", "\"" + device.extra.manufacturer + " " + device.extra.model + "\"" )
+       .set[String]("device.name", name )
        .save(configFileName)
   }
   
