@@ -6,11 +6,11 @@ import dispatch._, Defaults._
 import argonaut._, Argonaut._
 
 abstract class PushableType extends ApiCall
-case class Note(title:String, body:String) extends PushableType
-case class Link(title:String, url:String) extends PushableType
-case class Address(name:String, address:String) extends PushableType
-case class ToDoList(tile:String, items:String) extends PushableType
-case class File(file:String) extends PushableType
+case class pushNote(title:String, body:String) extends PushableType
+case class pushLink(title:String, url:String) extends PushableType
+case class pushAddress(name:String, address:String) extends PushableType
+case class pushToDoList(tile:String, items:String) extends PushableType
+case class pushFile(file:String) extends PushableType
 
 abstract class ApiCall
 case class GetDevices(API_KEY:String) extends ApiCall
@@ -23,11 +23,11 @@ class PushAPI extends Actor {
   
   def receive = {
     case GetDevices => saveDevice
-    case ToDoList	=>
-    case File(file)		    => pushAPI.push(deviceId, Map("type" -> "file", "file" -> file) )
-    case Note(title, body) => pushAPI.push(deviceId, Map("type" -> "note", "title" -> title, "body" -> body) )
-    case Link(title, url)  => pushAPI.push(deviceId, Map("type" -> "link","title" -> title, "url" -> url) )
-    case Address(name, address) => pushAPI.push(deviceId, Map("type" -> "address", "name" -> name, "address" -> address) )
+    case pushToDoList(title, items)	=>
+    case pushFile(file)		    => pushAPI.push(deviceId, Map("type" -> "file", "file" -> file) )
+    case pushNote(title, body) => pushAPI.push(deviceId, Map("type" -> "note", "title" -> title, "body" -> body) )
+    case pushLink(title, url)  => pushAPI.push(deviceId, Map("type" -> "link","title" -> title, "url" -> url) )
+    case pushAddress(name, address) => pushAPI.push(deviceId, Map("type" -> "address", "name" -> name, "address" -> address) )
   }
   
   def saveDevice {

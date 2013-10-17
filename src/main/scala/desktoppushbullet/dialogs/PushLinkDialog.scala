@@ -1,7 +1,7 @@
 package desktoppushbullet.dialogs
 
 import desktoppushbullet.PushBulletApp
-import desktoppushbullet.Link
+import desktoppushbullet.pushLink
 import scala.swing._
 import scala.swing.event.ButtonClicked
 import akka.actor.actorRef2Scala
@@ -31,6 +31,6 @@ class PushLinkDialog extends Frame {
       
       def doPush {
         this.visible = false
-        if((!linktitle.text.isEmpty()) && (!linkurl.text.isEmpty())) PushBulletApp.pushapi ! Link(linktitle.text, linkurl.text)
+        if((!linktitle.text.isEmpty()) && (!linkurl.text.isEmpty())) PushBulletApp.pushapi ! pushLink(linktitle.text, linkurl.text)
       }
 }
