@@ -16,7 +16,18 @@ object PushBulletApp {
   def main(args: Array[String]): Unit = {
     mainloop ! Setup
   }
+  
+  def shutdown {
+    PushBulletApp.system.shutdown()
+    sys.exit(0)
+  }
 
+  def setupGUI {
+    val pref = new PreferencesDialog(false)
+    val dialogs = Set[Frame](new PushLinkDialog, new NoteDialog)
+
+    val tray = new BulletSystemTray(dialogs, pref)
+  }
 }
 
 abstract class Commands
@@ -27,17 +38,10 @@ class appLoop extends Actor {
   def receive = {
     case Setup if (Preferences.API_KEY_Option.isEmpty) => new PreferencesDialog(true)
     case Setup if (Preferences.DefaultDeviceId_Option.isEmpty) => PushBulletApp.pushapi ! GetDevices
-    case Setup => doSetup
-    case Quit  => sys.exit(0)
+    case Setup => PushBulletApp.setupGUI
+    case Quit  => PushBulletApp.shutdown
 
   }
   
-  
 
-  def doSetup {
-    val pref = new PreferencesDialog(false)
-    val dialogs = Set[Frame](new PushLinkDialog, new NoteDialog)
-
-    val tray = new BulletSystemTray(dialogs, pref)
-  }
 }
