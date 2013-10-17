@@ -4,3 +4,4 @@
 *.cache
 .worksheet/
 *.sc
+pushbullet_desktop.conf
