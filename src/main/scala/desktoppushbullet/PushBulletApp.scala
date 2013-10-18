@@ -10,6 +10,9 @@ import scala.swing.RichWindow
 import akka.actor.PoisonPill
 import scala.concurrent.duration._
 import desktoppushbullet.systemtray.BulletSystemTray
+import desktoppushbullet.systemtray.TrayWidget
+
+import desktoppushbullet.remoteapi._
 
 object PushBulletApp {
   
@@ -36,7 +39,24 @@ object PushBulletApp {
   def setupGUI {
       val pref = new PreferencesDialog(false)
       val dialogs = Set[RichWindow](new PushLinkDialog, new NoteDialog)
-      val tray = new BulletSystemTray(dialogs, pref)
+      
+      def toMenuItemCmd(frame:RichWindow):MenuItemCmd = { 
+        (frame.title, () =>
+          frame.visible match {
+            case true => frame.visible = false
+            case false => frame.visible = true
+          })
+      }
+      
+      val pushToDeviceName = Preferences.DefaultDeviceName
+      val menuCmds = dialogs map toMenuItemCmd
+      val quitCmd = {() => PushBulletApp.mainloop ! Quit }
+      val prefCmd = toMenuItemCmd(pref)
+      
+      val tray = System.getProperty("os.name") match {
+      case "Linux" => new TrayWidget(pushToDeviceName, menuCmds, quitCmd, prefCmd)
+      case _ => new BulletSystemTray(dialogs, pref)
+   }
       guiComponents = pref :: (dialogs.toList)
   }
 }

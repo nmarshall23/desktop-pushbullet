@@ -7,16 +7,10 @@ import argonaut._, Argonaut._
 import scala.util.Success
 import scala.util.Failure
 //import desktoppushbullet.QuitWithError
+import desktoppushbullet.remoteapi.Pushable
+import desktoppushbullet.remoteapi.jsonClasses._
 
-abstract class PushableType extends ApiCall
-case class pushNote(title: String, body: String) extends PushableType
-case class pushLink(title: String, url: String) extends PushableType
-case class pushAddress(name: String, address: String) extends PushableType
-case class pushToDoList(tile: String, items: String) extends PushableType
-case class pushFile(file: String) extends PushableType
-
-abstract class ApiCall
-case class GetDevices(API_KEY: String) extends ApiCall
+case class GetDevices
 
 class PushAPI extends Actor {
   lazy val key = Preferences.API_KEY
@@ -25,20 +19,21 @@ class PushAPI extends Actor {
 
   def receive = {
     case GetDevices => saveDevice
-    case pushToDoList(title, items) =>
-    case pushFile(file) => pushAPI.push(deviceId, Map("type" -> "file", "file" -> file))
-    case pushNote(title, body) => pushAPI.push(deviceId, Map("type" -> "note", "title" -> title, "body" -> body))
-    case pushLink(title, url) => pushAPI.push(deviceId, Map("type" -> "link", "title" -> title, "url" -> url))
-    case pushAddress(name, address) => pushAPI.push(deviceId, Map("type" -> "address", "name" -> name, "address" -> address))
+    case Pushable.ToDoList(title, items) =>
+    case Pushable.File(file) => pushAPI.push(deviceId, Map("type" -> "file", "file" -> file))
+    case Pushable.Note(title, body) => pushAPI.push(deviceId, Map("type" -> "note", "title" -> title, "body" -> body))
+    case Pushable.Link(title, url) => pushAPI.push(deviceId, Map("type" -> "link", "title" -> title, "url" -> url))
+    case Pushable.Address(name, address) => pushAPI.push(deviceId, Map("type" -> "address", "name" -> name, "address" -> address))
   }
 
   def saveDevice = pushAPI.getDevices onComplete {
+   
     case Success(json) => {
       
       for (
         listOf <- json.decodeOption[ListOfDevices];
         first <- listOf.devices.headOption
-      ) Preferences.setDevice(first)
+      ) Preferences.setDevice(first) 
 
       PushBulletApp.mainloop ! StartAPP
     }
@@ -51,24 +46,7 @@ class PushAPI extends Actor {
 
 }
 
-case class ListOfDevices(devices: List[Devices], shared_devices: List[Devices])
-case class Devices(id: Int, extra: DeviceExtraInfo)
-case class DeviceExtraInfo(android_version: String, app_version: String, manufacturer: String, model: String, sdk_version: String)
 
-object ListOfDevices {
-  implicit def ListOfDevicesCodecJson: CodecJson[ListOfDevices] =
-    casecodec2(ListOfDevices.apply, ListOfDevices.unapply)("devices", "shared_devices")
-}
-
-object DeviceExtraInfo {
-  implicit def ExtraInfoCodecJson: CodecJson[DeviceExtraInfo] =
-    casecodec5(DeviceExtraInfo.apply, DeviceExtraInfo.unapply)("android_version", "app_version", "manufacturer", "model", "sdk_version")
-}
-
-object Devices {
-  implicit def DevicesCodecJson: CodecJson[Devices] =
-    casecodec2(Devices.apply, Devices.unapply)("id", "extras")
-}
 
 class PushbulletAPI(API_KEY: String) {
 

@@ -4,7 +4,7 @@ import desktoppushbullet.PushBulletApp
 import scala.swing._
 import scala.swing.event.ButtonClicked
 import akka.actor.actorRef2Scala
-import desktoppushbullet.pushNote
+import desktoppushbullet.remoteapi.Pushable
 
 class NoteDialog extends Frame {
   
@@ -33,7 +33,7 @@ class NoteDialog extends Frame {
       
       def doPush {
         this.visible = false
-        if((!pushtitle.text.isEmpty()) && (!pushbody.text.isEmpty())) PushBulletApp.pushapi ! pushNote(pushtitle.text, pushbody.text)
+        if((!pushtitle.text.isEmpty()) && (!pushbody.text.isEmpty())) PushBulletApp.pushapi ! Pushable.Note(pushtitle.text, pushbody.text)
       }
 
 }

@@ -5,7 +5,8 @@ import org.streum.configrity._
 import org.streum.configrity.io.StandardFormat.ParserException
 import Option.{apply => ?}
 import java.io.File
-import scalaz.IsEmpty
+
+import desktoppushbullet.remoteapi.jsonClasses._
 
 object Preferences {
  
