@@ -10,20 +10,29 @@ import org.eclipse.swt.widgets.Listener
 import org.eclipse.swt.widgets.Event
 import org.eclipse.swt.widgets.Menu
 import org.eclipse.swt.widgets.MenuItem
-
 import desktoppushbullet.remoteapi._
+import org.eclipse.swt.graphics.GC
 
 class TrayWidget(pushToDeviceName: String, menuCmds: Set[MenuItemCmd], quitCmd: Function0[Unit], prefCmd:MenuItemCmd ) {
 
   private val display = new Display()
   private val shell = new Shell(display)
-  private val image = new Image(display, 16, 16)
+  private val iconFile = this.getClass.getResource("/icons/PushBullet-Icon32.png")
+  private val image = new Image(display, "src/main/resources/icons/PushBullet-Icon32.png"  )
 
+
+	val image2 = new Image (display, 32	, 32)
+	val gc = new GC(image2)
+	gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK))
+	gc.fillRectangle(image2.getBounds())
+	gc.dispose()
+  
   createSystemTray
 
   def shutdownTray {
     shell.dispose()
     image.dispose()
+    image2.dispose()
     display.dispose()
   }
 
@@ -31,7 +40,10 @@ class TrayWidget(pushToDeviceName: String, menuCmds: Set[MenuItemCmd], quitCmd: 
 
     val tray = ?(display.getSystemTray())
     if (tray.isEmpty) {
-
+    	println("Fixme?") //XXX
+    	quitCmd()
+    	shutdownTray
+    	return
     }
 
     val item = new TrayItem(tray.get, SWT.NONE)
@@ -45,6 +57,12 @@ class TrayWidget(pushToDeviceName: String, menuCmds: Set[MenuItemCmd], quitCmd: 
     }
 
     item.setImage(image)
+//    item.setHighlightImage (image2)
+    
+    item.setVisible(true)
+    println("Can you see me?")
+    
+   // shell.setVisible(true)
 
     while (!shell.isDisposed()) {
       if (!display.readAndDispatch())
