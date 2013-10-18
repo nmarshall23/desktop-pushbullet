@@ -1,10 +1,13 @@
 package desktoppushbullet
 
 package object remoteapi {
-  type MenuItemCmd = (String, Function0[Unit])
+  type MenuItemCmd = (String, Function1[Unit,Unit])
+
+  def compositeMenuItemCmd(cmd:MenuItemCmd)(thatcmd:Function1[Unit,Unit]):MenuItemCmd = {
+    (cmd._1, cmd._2 andThen thatcmd   )
+  }
 
   
-
 
   trait ApiCall
    // extends ApiCall

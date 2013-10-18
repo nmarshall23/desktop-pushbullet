@@ -41,7 +41,7 @@ object PushBulletApp {
       val dialogs = Set[RichWindow](new PushLinkDialog, new NoteDialog)
       
       def toMenuItemCmd(frame:RichWindow):MenuItemCmd = { 
-        (frame.title, () =>
+        (frame.title, (Unit) =>
           frame.visible match {
             case true => frame.visible = false
             case false => frame.visible = true
@@ -50,13 +50,11 @@ object PushBulletApp {
       
       val pushToDeviceName = Preferences.DefaultDeviceName
       val menuCmds = dialogs map toMenuItemCmd
-      val quitCmd = ("Quit",{() => PushBulletApp.mainloop ! Quit })
+      val quitCmd:MenuItemCmd = ("Quit",{(Unit) => PushBulletApp.mainloop ! Quit })
       val prefCmd = toMenuItemCmd(pref)
       
-      val tray = System.getProperty("os.name") match {
-      case "Linux" => new TrayWidget(pushToDeviceName, menuCmds, quitCmd, prefCmd)
-      case _ => new BulletSystemTray(dialogs, pref)
-   }
+      new TrayWidget(pushToDeviceName, menuCmds, quitCmd, prefCmd)
+
       guiComponents = pref :: (dialogs.toList)
   }
 }
