@@ -50,7 +50,7 @@ object PushBulletApp {
       
       val pushToDeviceName = Preferences.DefaultDeviceName
       val menuCmds = dialogs map toMenuItemCmd
-      val quitCmd = {() => PushBulletApp.mainloop ! Quit }
+      val quitCmd = ("Quit",{() => PushBulletApp.mainloop ! Quit })
       val prefCmd = toMenuItemCmd(pref)
       
       val tray = System.getProperty("os.name") match {

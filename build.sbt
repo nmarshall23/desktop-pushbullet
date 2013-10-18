@@ -15,7 +15,7 @@ libraryDependencies ++= Seq(
   "org.streum" %% "configrity-core" % "1.0.0",
   "com.typesafe.akka" %% "akka-actor" % "2.2.1",
   "io.argonaut" %% "argonaut" % "6.0.1",
-  "org.eclipse.swt" % "org.eclipse.swt.gtk.linux.x86" % "4.3"
+  "com.github.taksan" % "native-tray-adapter" % "1.2-SNAPSHOT"
 )
 
 initialCommands := "import desktoppushbullet._"
