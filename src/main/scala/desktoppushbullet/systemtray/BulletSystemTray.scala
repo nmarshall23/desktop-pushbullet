@@ -1,17 +1,18 @@
-package desktoppushbullet
+package desktoppushbullet.systemtray
 
 import java.awt.SystemTray
-import java.awt.Toolkit
 import java.awt.TrayIcon
 import java.awt.PopupMenu
 import java.awt.MenuItem
 import java.awt.event.ActionListener
 import java.awt.event.ActionEvent
 import javax.imageio.ImageIO
-import java.awt.Image
-import scala.swing.Frame
 import scala.collection.immutable.Set
 import scala.swing.RichWindow
+import akka.actor.actorRef2Scala
+import desktoppushbullet.Preferences
+import desktoppushbullet.PushBulletApp
+import desktoppushbullet.Quit
 
 class BulletSystemTray(windows: Set[RichWindow], preferencesDialog:RichWindow) {
 

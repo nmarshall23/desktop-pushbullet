@@ -9,6 +9,7 @@ import desktoppushbullet.dialogs.NoteDialog
 import scala.swing.RichWindow
 import akka.actor.PoisonPill
 import scala.concurrent.duration._
+import desktoppushbullet.systemtray.BulletSystemTray
 
 object PushBulletApp {
   
@@ -24,14 +25,12 @@ object PushBulletApp {
   }
   
   def shutdown {
-    
     actorSupervisor.stop(pushapi)
     actorSupervisor.stop(mainloop)
 
     guiComponents.foreach( g => g.dispose)
     sys.exit
     
-
   }
 
   def setupGUI {
@@ -59,6 +58,4 @@ class appLoop extends Actor {
     case QuitWithError(message) => PushBulletApp.shutdown //XXX add dialog with Message.
 
   }
-  
-
 }
