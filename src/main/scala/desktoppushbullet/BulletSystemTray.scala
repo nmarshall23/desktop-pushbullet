@@ -15,19 +15,19 @@ import scala.swing.RichWindow
 
 class BulletSystemTray(windows: Set[RichWindow], preferencesDialog:RichWindow) {
 
-  setupTray
+  val tray = SystemTray.getSystemTray()
+  val trayIcon = setupTrayIcon
+  tray.add(trayIcon)
   
-  def setupTray {
-
-    val tray = SystemTray.getSystemTray()
-
+  def setupTrayIcon = {
     val iconFile = this.getClass.getResource("/icons/PushBullet-Icon32.png")
     val trayIcon = new TrayIcon(ImageIO.read(iconFile))
 
     val PopupMenu = setupPopupMenu()
     trayIcon.setPopupMenu(PopupMenu)
     trayIcon.setImageAutoSize(true)
-    tray.add(trayIcon)
+    
+    trayIcon
   }
   
   def setupPopupMenu():PopupMenu = {
@@ -67,9 +67,9 @@ class BulletSystemTray(windows: Set[RichWindow], preferencesDialog:RichWindow) {
       menuItem.addActionListener(new ActionListener() {
 
         def actionPerformed(e: ActionEvent) {
-          println("I Quit!")
-          sys.exit(1)
-          //PushBulletApp.mainloop ! Quit
+        	tray.remove(trayIcon)
+
+          PushBulletApp.mainloop ! Quit
         }
       });
 

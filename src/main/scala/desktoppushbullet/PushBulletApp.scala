@@ -8,6 +8,7 @@ import desktoppushbullet.dialogs.PushLinkDialog
 import desktoppushbullet.dialogs.NoteDialog
 import scala.swing.RichWindow
 import akka.actor.PoisonPill
+import scala.concurrent.duration._
 
 object PushBulletApp {
   
@@ -15,36 +16,33 @@ object PushBulletApp {
   val mainloop = actorSupervisor.actorOf(Props[appLoop], name = "AppLoop")
   val pushapi  = actorSupervisor.actorOf(Props[PushAPI], name = "PushAPI")
   
+  private var guiComponents = List[RichWindow]();
+  
   def main(args: Array[String]): Unit = {
     mainloop ! StartAPP
+    
   }
   
   def shutdown {
     
-   // actorSupervisor.stop(pushapi)
-   // actorSupervisor.stop(mainloop)
+    actorSupervisor.stop(pushapi)
+    actorSupervisor.stop(mainloop)
 
-     wait(300)
-     println(pushapi.isTerminated)
+    guiComponents.foreach( g => g.dispose)
+    sys.exit
     
-    actorSupervisor.shutdown()
-    
-   println(pushapi.isTerminated)
-    
-    
-    //java.awt.
-    sys.exit()
 
   }
 
   def setupGUI {
-    val pref = new PreferencesDialog(false)
-    val dialogs = Set[RichWindow](new PushLinkDialog, new NoteDialog)
-
-    val tray = new BulletSystemTray(dialogs, pref)
-    
+      val pref = new PreferencesDialog(false)
+      val dialogs = Set[RichWindow](new PushLinkDialog, new NoteDialog)
+      val tray = new BulletSystemTray(dialogs, pref)
+      guiComponents = pref :: (dialogs.toList)
   }
 }
+
+
 
 abstract class Commands
 object StartAPP extends Commands
