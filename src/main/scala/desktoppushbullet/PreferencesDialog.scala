@@ -3,7 +3,7 @@ package desktoppushbullet
 import scala.swing._
 import scala.swing.event.ButtonClicked
 
-class PreferencesDialog(needsSetup: Boolean) extends Frame {
+class PreferencesDialog(needsSetup: Boolean) extends Dialog {
   title = "Prefrerences"
   object apikey extends TextField {
     columns = 5
@@ -26,10 +26,12 @@ class PreferencesDialog(needsSetup: Boolean) extends Frame {
 
   }
 
+  override def defaultButton = Some(saveButton)
+  
   def SaveDialog {
     Preferences.setAPI_KEY(apikey.text)
     this.visible = false
-    if (needsSetup) PushBulletApp.mainloop ! Setup
+    if (needsSetup) PushBulletApp.mainloop ! API_KEY_Set
   }
   
   if(needsSetup) this.visible = true

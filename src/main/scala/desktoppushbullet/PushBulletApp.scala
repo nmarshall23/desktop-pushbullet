@@ -6,38 +6,61 @@ import akka.actor.ActorSystem
 import akka.actor.Props
 import desktoppushbullet.dialogs.PushLinkDialog
 import desktoppushbullet.dialogs.NoteDialog
+import scala.swing.RichWindow
+import akka.actor.PoisonPill
 
 object PushBulletApp {
-
-  val system = ActorSystem("MySystem")
-  val mainloop = system.actorOf(Props[appLoop], name = "AppLoop")
-  val pushapi  = system.actorOf(Props[PushAPI], name = "PushAPI")
+  
+  val actorSupervisor = ActorSystem("MySystem")
+  val mainloop = actorSupervisor.actorOf(Props[appLoop], name = "AppLoop")
+  val pushapi  = actorSupervisor.actorOf(Props[PushAPI], name = "PushAPI")
   
   def main(args: Array[String]): Unit = {
-    mainloop ! Setup
+    mainloop ! StartAPP
+  }
+  
+  def shutdown {
+    
+   // actorSupervisor.stop(pushapi)
+   // actorSupervisor.stop(mainloop)
+
+     wait(300)
+     println(pushapi.isTerminated)
+    
+    actorSupervisor.shutdown()
+    
+   println(pushapi.isTerminated)
+    
+    
+    //java.awt.
+    sys.exit()
+
   }
 
+  def setupGUI {
+    val pref = new PreferencesDialog(false)
+    val dialogs = Set[RichWindow](new PushLinkDialog, new NoteDialog)
+
+    val tray = new BulletSystemTray(dialogs, pref)
+    
+  }
 }
 
 abstract class Commands
-object Setup extends Commands
+object StartAPP extends Commands
 object Quit extends Commands
+case class QuitWithError(message:String) extends Commands
+object API_KEY_Set extends Commands
 
 class appLoop extends Actor {
   def receive = {
-    case Setup if (Preferences.API_KEY_Option.isEmpty) => new PreferencesDialog(true)
-    case Setup if (Preferences.DefaultDeviceId_Option.isEmpty) => PushBulletApp.pushapi ! GetDevices
-    case Setup => doSetup
-    case Quit  => sys.exit(0)
+    case StartAPP if (Preferences.NeedtoConfigure) => new PreferencesDialog(true)
+    case API_KEY_Set => PushBulletApp.pushapi ! GetDevices
+    case StartAPP => PushBulletApp.setupGUI
+    case Quit  => PushBulletApp.shutdown
+    case QuitWithError(message) => PushBulletApp.shutdown //XXX add dialog with Message.
 
   }
   
-  
 
-  def doSetup {
-    val pref = new PreferencesDialog(false)
-    val dialogs = Set[Frame](new PushLinkDialog, new NoteDialog)
-
-    val tray = new BulletSystemTray(dialogs, pref)
-  }
 }

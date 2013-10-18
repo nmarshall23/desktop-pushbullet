@@ -3,12 +3,15 @@ package desktoppushbullet
 
 import org.streum.configrity._
 import org.streum.configrity.io.StandardFormat.ParserException
+import Option.{apply => ?}
+import java.io.File
+import scalaz.IsEmpty
 
 object Preferences {
-  private val configFileName = "pushbullet_desktop.conf"
-
-  private val config = try {
-    Configuration.load(configFileName, org.streum.configrity.io.BlockFormat)
+ 
+  //Damnit can't think of away handle updates without making this a var.
+  private var config = try {
+    Configuration.load(ConfigName, org.streum.configrity.io.BlockFormat)
   } catch {
     case e:java.io.FileNotFoundException => Configuration()
     case e:ParserException => Configuration() //Hmm Guess it's better to overwrite the configuration. 
@@ -16,14 +19,22 @@ object Preferences {
 
 
   
-  def setAPI_KEY(key:String) = config.set[String]("users_api_key",key).save(configFileName)
-  def setDevice(device:Devices) {
+  def setAPI_KEY(key:String):Boolean = {
+    config = config.set[String]("users_api_key",key)
+    config.save(ConfigName)
+    config.contains("users_api_key")
+  }
+  
+  def setDevice(device:Devices):Boolean = {
     val manufacturer = device.extra.manufacturer
     val model = device.extra.model
     val name = s""""$manufacturer $model"""" 
-    config.set[Int]("device.id"  , device.id)
+    config = config.set[Int]("device.id"  , device.id)
        .set[String]("device.name", name )
-       .save(configFileName)
+       
+    config.save(ConfigName)
+    config.contains("device.id")
+    
   }
   
   def NeedtoConfigure:Boolean = {
@@ -39,4 +50,23 @@ object Preferences {
   def DefaultDeviceId_Option = config.get[Int]("device.id")
   def DefaultDeviceName = config[String]("device.name")
   
+  private lazy val ConfigName = {
+   val configFileName = "pushbullet_desktop.conf"
+   val userHomeDir = ?(System.getenv("USERPROFILE") ).getOrElse( ?(System.getProperty("user.home") ).getOrElse(".") )
+   val ourConfDir = System.getProperty("os.name") match {
+      case "Linux" => ".local" + File.separator + "share" + File.separator + "pushbullet_desktop"
+      case _ => ".pushbullet_desktop"
+   }
+    
+   val configDir =  userHomeDir + File.separator + ourConfDir
+   
+   def checkConfigDirExists(configDir:File):Boolean = configDir.isDirectory() || configDir.mkdirs()
+   
+   //println("Config Name: " + configDir)
+   //println("Config dir: " + checkConfigDirExists(new File(configDir)) )
+   //Not sure what else to do if configdir doesn't exists. Just return the configFileName
+   if(checkConfigDirExists(new File(configDir)) ) configDir + File.separator + configFileName
+   else configFileName
+   
+  }
 }

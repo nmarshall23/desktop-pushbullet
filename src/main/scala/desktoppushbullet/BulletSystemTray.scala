@@ -11,8 +11,9 @@ import javax.imageio.ImageIO
 import java.awt.Image
 import scala.swing.Frame
 import scala.collection.immutable.Set
+import scala.swing.RichWindow
 
-class BulletSystemTray(windows: Set[Frame], preferencesDialog:Frame) {
+class BulletSystemTray(windows: Set[RichWindow], preferencesDialog:RichWindow) {
 
   setupTray
   
@@ -45,7 +46,7 @@ class BulletSystemTray(windows: Set[Frame], preferencesDialog:Frame) {
     popupMenu
   }
 
-  def setupDialogMenus(popupMenu:PopupMenu)(frame:Frame) {
+  def setupDialogMenus(popupMenu:PopupMenu)(frame:RichWindow) {
       val menuItem = new MenuItem(frame.title)
       menuItem.addActionListener(new ActionListener() {
 
@@ -66,7 +67,9 @@ class BulletSystemTray(windows: Set[Frame], preferencesDialog:Frame) {
       menuItem.addActionListener(new ActionListener() {
 
         def actionPerformed(e: ActionEvent) {
-          PushBulletApp.mainloop ! Quit
+          println("I Quit!")
+          sys.exit(1)
+          //PushBulletApp.mainloop ! Quit
         }
       });
 
